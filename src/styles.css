@@ -7,14 +7,14 @@
 :root.light { color-scheme: light; --bg:#f3f5f0; --panel:#fff; --panel2:#edf0e9; --text:#11140e; --muted:#666d63; --line:#dce1d8; --lime:#97cf00; --blue:#1774c5; --shadow:0 20px 60px rgba(42,50,35,.09); }
 * { box-sizing:border-box; }
 html { background:var(--bg); }
-body { margin:0; min-width:320px; min-height:100vh; overflow-x:hidden; background:var(--bg); color:var(--text); }
+body { margin:0; min-width:320px; min-height:100vh; min-height:100dvh; overflow-x:hidden; background:var(--bg); color:var(--text); }
 button,input,select,textarea { font:inherit; }
 button,a { -webkit-tap-highlight-color:transparent; }
 a { color:inherit; text-decoration:none; }
 button { cursor:pointer; }
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible { outline:2px solid var(--lime); outline-offset:2px; }
 svg { width:19px; height:19px; flex:0 0 auto; }
-.app-shell { min-height:100vh; padding-left:236px; }
+.app-shell { min-height:100vh; min-height:100dvh; padding-left:236px; }
 .sidebar { position:fixed; inset:0 auto 0 0; width:236px; padding:28px 18px; border-right:1px solid var(--line); background:color-mix(in srgb,var(--panel) 94%,transparent); display:flex; flex-direction:column; z-index:20; }
 .brand { display:flex; align-items:center; gap:12px; padding:0 10px 28px; }
 .brand>span { width:38px;height:38px;border-radius:11px;background:var(--lime);color:#0b0e08;display:grid;place-items:center;transform:rotate(-6deg); }
@@ -100,3 +100,18 @@ main { min-width:0; }
 @media(max-width:700px){.workout-add{display:grid;grid-template-columns:1.4fr 1fr .8fr;gap:5px;overflow:visible}.workout-add .btn{min-width:0;padding-inline:7px;font-size:11px}}
 @media(max-width:700px){.set-row>.set-type{display:none}.set-row>.metric-select{display:block;height:38px;font-size:10px;padding-inline:4px}.set-row:not(.metric-weight_reps):not(.metric-ergometer)>.step-input{grid-column:span 2}.set-row>.metric-spacer{display:none}.metric-input{grid-template-columns:24px minmax(0,1fr) 24px}}
 @media(max-width:700px){.metric-input{display:block}.metric-input button,.metric-input span{display:none}.metric-input input{width:100%;height:100%;padding:0 5px}}
+
+/* Cabecera móvil compacta y protegida de la isla dinámica/notch de iOS. */
+@media(max-width:700px){
+  .page{
+    padding-top:calc(10px + env(safe-area-inset-top));
+    padding-right:max(12px,env(safe-area-inset-right));
+    padding-bottom:calc(34px + env(safe-area-inset-bottom));
+    padding-left:max(12px,env(safe-area-inset-left));
+  }
+  .page-header{gap:9px;margin-bottom:17px}
+  .page-header h1{font-size:clamp(29px,9vw,33px);line-height:1.03;margin:4px 0 5px}
+  .page-header p:not(.eyebrow){font-size:12px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .eyebrow{font-size:10px;line-height:1.2}
+  .bottom-nav{padding-right:max(4px,env(safe-area-inset-right));padding-left:max(4px,env(safe-area-inset-left))}
+}
