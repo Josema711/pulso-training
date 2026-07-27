@@ -1,0 +1,12 @@
+import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from 'react'
+import { LoaderCircle } from 'lucide-react'
+
+export function Card({ children, className = '' }: { children: ReactNode; className?: string }) { return <section className={`card ${className}`}>{children}</section> }
+export function Button({ children, variant = 'primary', className = '', ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'ghost' | 'danger' }) { return <button className={`btn btn-${variant} ${className}`} {...props}>{children}</button> }
+export function Input({ label, error, ...props }: InputHTMLAttributes<HTMLInputElement> & { label?: string; error?: string }) { return <label className="field">{label && <span>{label}</span>}<input {...props} />{error && <small className="error">{error}</small>}</label> }
+export function Select({ label, children, ...props }: SelectHTMLAttributes<HTMLSelectElement> & { label?: string; children: ReactNode }) { return <label className="field">{label && <span>{label}</span>}<select {...props}>{children}</select></label> }
+export function PageHeader({ eyebrow, title, subtitle, action }: { eyebrow?: string; title: string; subtitle?: string; action?: ReactNode }) { return <header className="page-header"><div>{eyebrow && <p className="eyebrow">{eyebrow}</p>}<h1>{title}</h1>{subtitle && <p>{subtitle}</p>}</div>{action}</header> }
+export function EmptyState({ icon, title, text, action }: { icon: ReactNode; title: string; text: string; action?: ReactNode }) { return <div className="empty-state"><div className="empty-icon">{icon}</div><h3>{title}</h3><p>{text}</p>{action}</div> }
+export function Loading() { return <div className="loading"><LoaderCircle className="spin" /> Cargando tus datos…</div> }
+export function Stat({ label, value, detail }: { label: string; value: string | number; detail?: string }) { return <Card className="stat"><span>{label}</span><strong>{value}</strong>{detail && <small>{detail}</small>}</Card> }
+export function Modal({ title, children, onClose }: { title: string; children: ReactNode; onClose: () => void }) { return <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}><div className="modal" role="dialog" aria-modal="true" aria-label={title}><div className="modal-head"><h2>{title}</h2><Button variant="ghost" onClick={onClose} aria-label="Cerrar">✕</Button></div>{children}</div></div> }
