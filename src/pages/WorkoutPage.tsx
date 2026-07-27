@@ -57,7 +57,7 @@ function FinishModal({ sets, onClose, onFinish }: { sets: SetEntry[]; onClose: (
 }
 
 export function WorkoutPage() {
-  const navigate = useNavigate(); const active = useLiveQuery(() => db.workouts.where('status').equals('active').first(), [])
+  const navigate = useNavigate(); const active = useLiveQuery(async () => (await db.workouts.where('status').equals('active').first()) ?? null, [])
   const links = useLiveQuery(() => active ? db.workoutExercises.where('workoutId').equals(active.id).sortBy('order') : [], [active?.id]) || []
   const sets = useLiveQuery(() => links.length ? db.sets.where('workoutExerciseId').anyOf(links.map((x) => x.id)).toArray() : [], [links.map((x) => x.id).join(',')]) || []
   const exercises = useLiveQuery(async () => (await db.exercises.orderBy('name').toArray()).filter((exercise) => exercise.active), []) || []
