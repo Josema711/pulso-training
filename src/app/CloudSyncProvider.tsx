@@ -104,6 +104,9 @@ export function CloudSyncProvider({ children }: { children: ReactNode }) {
   const login = async () => {
     setStatus('connecting'); setError('')
     try {
+      if (location.hostname.endsWith('.github.io')) {
+        throw new Error('El acceso con Google se realiza en https://pulso-training.web.app. No necesitas verificar el dominio de GitHub.')
+      }
       await setPersistence(firebaseAuth, rememberMe ? browserLocalPersistence : browserSessionPersistence)
       const standalone = window.matchMedia('(display-mode: standalone)').matches || ('standalone' in navigator && Boolean((navigator as Navigator & { standalone?: boolean }).standalone))
       if (standalone) {
