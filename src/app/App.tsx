@@ -25,7 +25,10 @@ function Onboarding() {
     document.documentElement.classList.toggle('light', settings.theme === 'light' || (settings.theme === 'system' && !systemDark))
   }, [settings])
   if (!settings || settings.onboardingDone) return null
-  const finish = async (withLibrary: boolean) => { if (withLibrary) await db.exercises.bulkAdd(basicExercises()); await db.settings.update('settings', { onboardingDone: true, updatedAt: nowIso() }) }
+  const finish = async (withLibrary: boolean) => {
+    if (withLibrary) await db.exercises.bulkAdd(basicExercises())
+    await db.settings.put({ ...settings, onboardingDone: true, updatedAt: nowIso() })
+  }
   return <Modal title="Bienvenido a Pulso" onClose={() => undefined}><div className="onboarding"><div className="onboarding-mark"><Dumbbell /></div><h2>Tu entrenamiento. Tus datos. Tu progreso.</h2><p>Pulso recuerda lo que haces y propone avances prudentes. Nunca creará rutinas ni enviará tus datos fuera del navegador.</p><div className="onboarding-privacy"><ShieldCheck /><span><b>Privado por diseño</b><small>Todo se guarda solo en este dispositivo.</small></span></div><Button onClick={() => finish(true)}><Library /> Cargar biblioteca básica</Button><Button variant="secondary" onClick={() => finish(false)}>Empezar vacío</Button></div></Modal>
 }
 
