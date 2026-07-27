@@ -43,9 +43,7 @@ export const defaultSettings: AppSettings = {
 
 export async function getSettings() {
   const stored = await db.settings.get('settings')
-  if (stored) return stored
-  await db.settings.put(defaultSettings)
-  return defaultSettings
+  return stored ?? defaultSettings
 }
 
 export async function deleteWorkoutCascade(workoutId: string) {
