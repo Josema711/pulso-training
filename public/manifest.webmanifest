@@ -1,0 +1,18 @@
+{
+  "name": "Pulso — Entrena con memoria",
+  "short_name": "Pulso",
+  "description": "Registro de entrenamiento y progreso personal.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080a0e",
+  "theme_color": "#080a0e",
+  "icons": [
+    {
+      "src": "./pulso-icon.png",
+      "sizes": "1536x1536",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
-import { onAuthStateChanged, signInWithPopup, signInWithRedirect, signOut, type User } from 'firebase/auth'
+import { browserLocalPersistence, browserSessionPersistence, onAuthStateChanged, setPersistence, signInWithPopup, signInWithRedirect, signOut, type User } from 'firebase/auth'
 import { onSnapshot } from 'firebase/firestore'
 import { firebaseAuth, googleProvider } from '../services/firebase'
 import { cloudManifestReference, downloadCloudBackup, uploadCloudBackup } from '../services/cloud'
@@ -7,10 +7,11 @@ import { exportBackup, importBackup, mergeBackupData } from '../services/backup'
 import type { BackupData } from '../types'
 
 type CloudStatus = 'local' | 'connecting' | 'syncing' | 'synced' | 'error'
-interface CloudSyncValue { user: User | null; status: CloudStatus; error: string; lastSyncedAt: string | null; login: () => Promise<void>; logout: () => Promise<void>; syncNow: () => Promise<void> }
+interface CloudSyncValue { user: User | null; status: CloudStatus; error: string; lastSyncedAt: string | null; rememberMe: boolean; setRememberMe: (value: boolean) => Promise<void>; login: () => Promise<void>; logout: () => Promise<void>; syncNow: () => Promise<void> }
 const CloudSyncContext = createContext<CloudSyncValue | null>(null)
 const DEVICE_KEY = 'pulso-device-id'
 const USER_KEY = 'pulso-cloud-user'
+const REMEMBER_KEY = 'pulso-remember-session'
 
 function getDeviceId() {
   const stored = localStorage.getItem(DEVICE_KEY)
@@ -29,6 +30,7 @@ export function CloudSyncProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<CloudStatus>('local')
   const [error, setError] = useState('')
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null)
+  const [rememberMe, setRememberState] = useState(() => localStorage.getItem(REMEMBER_KEY) !== 'false')
   const lastFingerprint = useRef('')
   const syncing = useRef(false)
   const deviceId = useRef(getDeviceId())
@@ -99,6 +101,7 @@ export function CloudSyncProvider({ children }: { children: ReactNode }) {
   const login = async () => {
     setStatus('connecting'); setError('')
     try {
+      await setPersistence(firebaseAuth, rememberMe ? browserLocalPersistence : browserSessionPersistence)
       await signInWithPopup(firebaseAuth, googleProvider)
     } catch (cause) {
       if (cause instanceof Error && (cause as Error & { code?: string }).code === 'auth/popup-blocked') {
@@ -110,8 +113,12 @@ export function CloudSyncProvider({ children }: { children: ReactNode }) {
       throw cause
     }
   }
+  const setRememberMe = async (value: boolean) => {
+    await setPersistence(firebaseAuth, value ? browserLocalPersistence : browserSessionPersistence)
+    localStorage.setItem(REMEMBER_KEY, String(value)); setRememberState(value)
+  }
   const logout = async () => { await syncNow(); await signOut(firebaseAuth); setStatus('local') }
-  return <CloudSyncContext.Provider value={{ user, status, error, lastSyncedAt, login, logout, syncNow }}>{children}</CloudSyncContext.Provider>
+  return <CloudSyncContext.Provider value={{ user, status, error, lastSyncedAt, rememberMe, setRememberMe, login, logout, syncNow }}>{children}</CloudSyncContext.Provider>
 }
 
 // eslint-disable-next-line react-refresh/only-export-components

@@ -9,6 +9,7 @@ Aplicación web privada y local-first para registrar entrenamientos manuales, co
 - Biblioteca editable, cardio, WODs, cambio físico, historial y gráficas.
 - Volumen, 1RM estimado, récords, estancamientos y coach de progresión explicable.
 - Copias completas JSON, informes CSV y sincronización privada opcional con Firebase.
+- Sesión de Google persistente opcional e icono instalable en la pantalla de inicio.
 - Interfaz responsive en español con temas oscuro, claro y automático.
 
 ## Desarrollo local
@@ -93,6 +94,8 @@ Repite **Code → Add file → Upload files**, arrastra los archivos o carpetas 
 ## Copias de seguridad
 
 En **Ajustes**, pulsa **Continuar con Google** para activar la copia automática. Pulso mantiene IndexedDB como caché sin conexión y guarda una copia completa en Firestore. También puedes descargar un JSON manual en **Ajustes → Importar y exportar**; es recomendable conservar alguno periódicamente como segunda protección.
+
+La opción **Recordarme en este dispositivo** está activada por defecto. En iPhone, abre Pulso en Safari y usa **Compartir → Añadir a pantalla de inicio**. Si ya tenías instalada una versión anterior sin icono, elimínala de la pantalla de inicio y vuelve a añadirla para que iOS actualice el icono almacenado.
 
 ## Privacidad y límites
 

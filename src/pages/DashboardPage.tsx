@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { addDays, formatDistanceToNow, isAfter, startOfMonth, startOfWeek, subDays } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { ArrowRight, Award, CalendarDays, Dumbbell, Plus, Scale, Sparkles, TrendingUp } from 'lucide-react'
+import { ArrowRight, Award, CalendarDays, Dumbbell, Scale, Sparkles, TrendingUp } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { db, getSettings } from '../db/database'
 import { getExerciseSessions } from '../services/workouts'
@@ -23,7 +23,7 @@ export function DashboardPage() {
   }, [])
   if (!data) return <Loading />
   const latestWeight = data.measurements[0]; const weightAt = (days: number) => data.measurements.find((m) => m.date <= subDays(new Date(), days).toISOString().slice(0, 10)); const delta = (days: number) => latestWeight && weightAt(days) ? latestWeight.weight - weightAt(days)!.weight : null
-  return <div className="page"><PageHeader eyebrow="TU CENTRO DE CONTROL" title="Entrena con memoria." subtitle="Tu historial decide la siguiente mejora. Tú decides el entrenamiento." action={<Link to="/entrenamiento"><Button><Plus /> Registrar entrenamiento</Button></Link>} />
+  return <div className="page"><PageHeader eyebrow="TU CENTRO DE CONTROL" title="Entrena con memoria." subtitle="Tu historial decide la siguiente mejora. Tú decides el entrenamiento." />
     <div className="hero-grid"><Card className="hero-card"><div><span className="status-dot" /> LISTO PARA ENTRENAR</div><h2>{data.workouts[0] ? `Última sesión: ${data.workouts[0].name || data.workouts[0].type}` : 'Tu próximo registro empieza aquí'}</h2><p>{data.workouts[0] ? `${data.workouts[0].date} · hace ${formatDistanceToNow(new Date(`${data.workouts[0].date}T${data.workouts[0].startTime}`), { locale: es })}` : 'Añade solo lo que hagas. Pulso recordará cargas y repeticiones.'}</p><Link to="/entrenamiento"><Button className="hero-button"><Dumbbell /> {data.workouts[0] ? 'Iniciar nueva sesión' : 'Registrar mi primera sesión'} <ArrowRight /></Button></Link></Card>
       <Card className="week-card"><CalendarDays /><span>Esta semana</span><strong>{data.weekCount}</strong><small>entrenamientos · {formatNumber(data.weekVolume, 0)} kg de volumen</small><div className="week-bars">{[0,1,2,3,4,5,6].map((d) => <i key={d} className={d < Math.min(data.weekCount, 7) ? 'filled' : ''} />)}</div></Card></div>
     <div className="stats-grid"><Stat label="Este mes" value={data.monthCount} detail="sesiones completadas" /><Stat label="Series efectivas" value={data.weekSets} detail="esta semana" /><Stat label="Peso actual" value={latestWeight ? `${formatNumber(latestWeight.weight)} kg` : '—'} detail={delta(7) == null ? 'sin registros suficientes' : `${delta(7)! > 0 ? '+' : ''}${formatNumber(delta(7)!)} kg en 7 días`} /><Stat label="Récords" value={data.records.length} detail="recientes" /></div>
