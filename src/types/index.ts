@@ -4,12 +4,15 @@ export type ProgressionMethod = 'Doble progresión' | 'Progresión lineal' | 'Pr
 export type SetType = 'Calentamiento' | 'Aproximación' | 'Efectiva' | 'Drop set' | 'Back-off' | 'Al fallo' | 'Técnica' | 'Otro'
 export type SessionType = 'Gimnasio' | 'Fuerza' | 'Hipertrofia' | 'CrossFit' | 'Cardio' | 'Mixto' | 'Otro'
 export type RecommendationAction = 'increase_weight' | 'maintain_weight' | 'increase_reps' | 'reduce_weight' | 'repeat' | 'insufficient_data'
+export type TrackingMode = 'weight_reps' | 'reps' | 'distance' | 'calories' | 'time' | 'ergometer'
+export type SetMetric = 'weight_reps' | 'reps' | 'meters' | 'calories' | 'seconds'
 
 export interface Exercise {
   id: string; name: string; primaryMuscle: string; secondaryMuscles: string[]; type: ExerciseType
   equipment: Equipment; unit: string; minIncrement: number; targetMinReps: number; targetMaxReps: number
   usualSets: number; restSeconds: number; progressionMethod: ProgressionMethod; technicalNotes: string
   active: boolean; favorite: boolean; perDumbbell: boolean; createdAt: string; updatedAt: string
+  trackingMode?: TrackingMode
 }
 export interface Workout {
   id: string; date: string; startTime: string; endTime: string | null; name: string; type: SessionType
@@ -18,7 +21,7 @@ export interface Workout {
   pain: string; comments: string; createdAt: string; updatedAt: string
 }
 export interface WorkoutExercise { id: string; workoutId: string; exerciseId: string; order: number; notes: string; createdAt: string; updatedAt: string }
-export interface SetEntry { id: string; workoutExerciseId: string; order: number; type: SetType; weight: number | null; reps: number | null; rir: number | null; rpe: number | null; completed: boolean; notes: string; completedAt: string | null; createdAt: string; updatedAt: string }
+export interface SetEntry { id: string; workoutExerciseId: string; order: number; type: SetType; weight: number | null; reps: number | null; metric?: SetMetric; metricValue?: number | null; rir: number | null; rpe: number | null; completed: boolean; notes: string; completedAt: string | null; createdAt: string; updatedAt: string }
 export interface CardioEntry { id: string; workoutId: string; type: string; durationMinutes: number | null; distance: number | null; pace: number | null; averageSpeed: number | null; calories: number | null; averageHeartRate: number | null; maxHeartRate: number | null; incline: number | null; resistance: number | null; effortZone: string; notes: string; createdAt: string; updatedAt: string }
 export interface WodMovement { id: string; name: string; reps: number | null; weight: number | null; distance: number | null; calories: number | null; unit: string; notes: string }
 export interface WodEntry { id: string; workoutId: string; name: string; type: string; durationMinutes: number | null; timeCapMinutes: number | null; rounds: number | null; extraReps: number | null; finalTimeSeconds: number | null; rxWeight: number | null; usedWeight: number | null; scale: 'RX' | 'Escalado'; movements: WodMovement[]; result: string; notes: string; createdAt: string; updatedAt: string }

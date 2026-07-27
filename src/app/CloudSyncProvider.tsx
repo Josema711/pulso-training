@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
-import { browserLocalPersistence, browserSessionPersistence, onAuthStateChanged, setPersistence, signInWithPopup, signInWithRedirect, signOut, type User } from 'firebase/auth'
+import { browserLocalPersistence, browserSessionPersistence, getRedirectResult, onAuthStateChanged, setPersistence, signInWithPopup, signInWithRedirect, signOut, type User } from 'firebase/auth'
 import { onSnapshot } from 'firebase/firestore'
 import { firebaseAuth, googleProvider } from '../services/firebase'
 import { cloudManifestReference, downloadCloudBackup, uploadCloudBackup } from '../services/cloud'
@@ -35,7 +35,10 @@ export function CloudSyncProvider({ children }: { children: ReactNode }) {
   const syncing = useRef(false)
   const deviceId = useRef(getDeviceId())
 
-  useEffect(() => onAuthStateChanged(firebaseAuth, setUser), [])
+  useEffect(() => {
+    void getRedirectResult(firebaseAuth).catch((cause) => { setError(cause instanceof Error ? cause.message : 'No se pudo completar el acceso con Google'); setStatus('error') })
+    return onAuthStateChanged(firebaseAuth, setUser)
+  }, [])
 
   const syncNow = useCallback(async () => {
     if (!user || syncing.current) return
@@ -102,11 +105,16 @@ export function CloudSyncProvider({ children }: { children: ReactNode }) {
     setStatus('connecting'); setError('')
     try {
       await setPersistence(firebaseAuth, rememberMe ? browserLocalPersistence : browserSessionPersistence)
+      const standalone = window.matchMedia('(display-mode: standalone)').matches || ('standalone' in navigator && Boolean((navigator as Navigator & { standalone?: boolean }).standalone))
+      if (standalone) {
+        if (location.hostname !== 'pulso-training.web.app') throw new Error('Para iniciar sesión desde la app del iPhone, abre https://pulso-training.web.app y añádela a la pantalla de inicio.')
+        await signInWithRedirect(firebaseAuth, googleProvider)
+        return
+      }
       await signInWithPopup(firebaseAuth, googleProvider)
     } catch (cause) {
       if (cause instanceof Error && (cause as Error & { code?: string }).code === 'auth/popup-blocked') {
-        await signInWithRedirect(firebaseAuth, googleProvider)
-        return
+        if (location.hostname === 'pulso-training.web.app') { await signInWithRedirect(firebaseAuth, googleProvider); return }
       }
       const message = cause instanceof Error ? cause.message : 'No se ha podido iniciar sesión con Google'
       setError(message); setStatus('error')

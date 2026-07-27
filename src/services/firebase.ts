@@ -4,7 +4,7 @@ import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyD8b_QytGCZ7WyJHP_2OYVRbxYK3aj6La8',
-  authDomain: 'pulso-training.firebaseapp.com',
+  authDomain: 'pulso-training.web.app',
   projectId: 'pulso-training',
   storageBucket: 'pulso-training.firebasestorage.app',
   messagingSenderId: '93495235639',

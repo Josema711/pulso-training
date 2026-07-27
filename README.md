@@ -97,6 +97,20 @@ En **Ajustes**, pulsa **Continuar con Google** para activar la copia automática
 
 La opción **Recordarme en este dispositivo** está activada por defecto. En iPhone, abre Pulso en Safari y usa **Compartir → Añadir a pantalla de inicio**. Si ya tenías instalada una versión anterior sin icono, elimínala de la pantalla de inicio y vuelve a añadirla para que iOS actualice el icono almacenado.
 
+### Versión instalable para iPhone
+
+Safari bloquea el retorno de Google cuando una web app instalada desde GitHub Pages usa un dominio de autenticación diferente. Por eso el repositorio conserva GitHub Pages, pero publica también la misma aplicación en `https://pulso-training.web.app`, bajo el dominio de Firebase.
+
+Para activar esa publicación usando únicamente las interfaces web:
+
+1. En Firebase Console abre **Configuración del proyecto → Cuentas de servicio**.
+2. Pulsa **Generar nueva clave privada** y guarda el JSON. No subas ese archivo al repositorio.
+3. En GitHub abre **Settings → Secrets and variables → Actions → New repository secret**.
+4. Usa como nombre exacto `FIREBASE_SERVICE_ACCOUNT_PULSO_TRAINING` y pega como valor todo el contenido del JSON.
+5. Comprueba en Firebase **Authentication → Settings → Authorized domains** que aparece `pulso-training.web.app`.
+6. El workflow `firebase-hosting.yml` publicará automáticamente cada commit en Firebase Hosting.
+7. En iPhone instala la aplicación desde `https://pulso-training.web.app`, no desde la dirección `github.io`.
+
 ## Privacidad y límites
 
 Pulso solo envía la copia de progreso a Firebase cuando el usuario conecta una cuenta de Google. No incluye analítica ni publicidad. Ningún servicio gratuito puede prometer disponibilidad perpetua, por lo que las copias JSON siguen disponibles. Las estimaciones y recomendaciones no son instrucciones médicas y no sustituyen el criterio profesional.

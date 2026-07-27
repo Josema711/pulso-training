@@ -1,7 +1,7 @@
-import type { Equipment, Exercise, ExerciseType } from '../types'
+import type { Equipment, Exercise, ExerciseType, TrackingMode } from '../types'
 import { nowIso, uid } from '../utils'
 
-const rows: Array<[string, string, ExerciseType, Equipment, number, number, number]> = [
+const rows: Array<[string, string, ExerciseType, Equipment, number, number, number, TrackingMode?]> = [
   ['Press banca', 'Pecho', 'Fuerza', 'Barra', 2.5, 6, 10], ['Press inclinado con mancuernas', 'Pecho', 'Hipertrofia', 'Mancuernas', 2, 8, 12],
   ['Sentadilla', 'Cuádriceps', 'Fuerza', 'Barra', 2.5, 5, 8], ['Front squat', 'Cuádriceps', 'Fuerza', 'Barra', 2.5, 3, 8],
   ['Peso muerto', 'Espalda', 'Fuerza', 'Barra', 5, 3, 6], ['Peso muerto rumano', 'Isquiotibiales', 'Hipertrofia', 'Barra', 2.5, 6, 10],
@@ -12,16 +12,16 @@ const rows: Array<[string, string, ExerciseType, Equipment, number, number, numb
   ['Extensión de tríceps', 'Tríceps', 'Hipertrofia', 'Polea', 2.5, 8, 15], ['Elevaciones laterales', 'Hombros', 'Hipertrofia', 'Mancuernas', 1, 10, 20],
   ['Fondos', 'Pecho', 'Peso corporal', 'Peso corporal', 1, 6, 12], ['Hip thrust', 'Glúteos', 'Hipertrofia', 'Barra', 2.5, 6, 12],
   ['Power clean', 'Cuerpo completo', 'CrossFit', 'Barra', 2.5, 2, 6], ['Hang power clean', 'Cuerpo completo', 'CrossFit', 'Barra', 2.5, 2, 6],
-  ['Push press', 'Hombros', 'CrossFit', 'Barra', 2.5, 3, 10], ['Toes to bar', 'Core', 'CrossFit', 'Peso corporal', 1, 5, 15],
-  ['Burpees', 'Cuerpo completo', 'CrossFit', 'Peso corporal', 1, 5, 20], ['Box jumps', 'Piernas', 'CrossFit', 'Peso corporal', 1, 5, 20],
-  ['Carrera', 'Cardio', 'Cardio', 'Cardio', 1, 1, 1], ['Bicicleta', 'Cardio', 'Cardio', 'Cardio', 1, 1, 1],
-  ['Remo', 'Cardio', 'Cardio', 'Cardio', 1, 1, 1], ['Escaladora', 'Cardio', 'Cardio', 'Cardio', 1, 1, 1],
+  ['Push press', 'Hombros', 'CrossFit', 'Barra', 2.5, 3, 10], ['Toes to bar', 'Core', 'CrossFit', 'Peso corporal', 1, 5, 15, 'reps'],
+  ['Burpees', 'Cuerpo completo', 'CrossFit', 'Peso corporal', 1, 5, 20, 'reps'], ['Box jumps', 'Piernas', 'CrossFit', 'Peso corporal', 1, 5, 20, 'reps'],
+  ['Carrera', 'Cardio', 'Cardio', 'Cardio', 1, 1, 1, 'distance'], ['Bicicleta', 'Cardio', 'Cardio', 'Cardio', 1, 1, 1, 'ergometer'], ['Assault Bike', 'Cardio', 'Cardio', 'Cardio', 1, 1, 1, 'ergometer'],
+  ['Remo', 'Cardio', 'Cardio', 'Cardio', 1, 1, 1, 'ergometer'], ['SkiErg', 'Cardio', 'Cardio', 'Cardio', 1, 1, 1, 'ergometer'], ['Escaladora', 'Cardio', 'Cardio', 'Cardio', 1, 1, 1, 'time'],
 ]
 
 export function basicExercises(): Exercise[] {
   const timestamp = nowIso()
-  return rows.map(([name, primaryMuscle, type, equipment, minIncrement, targetMinReps, targetMaxReps]) => ({
-    id: uid(), name, primaryMuscle, secondaryMuscles: [], type, equipment, unit: type === 'Cardio' ? 'Kilómetros' : type === 'Peso corporal' ? 'Repeticiones' : 'Kilogramos',
+  return rows.map(([name, primaryMuscle, type, equipment, minIncrement, targetMinReps, targetMaxReps, trackingMode = 'weight_reps']) => ({
+    id: uid(), name, primaryMuscle, secondaryMuscles: [], type, equipment, trackingMode, unit: trackingMode === 'ergometer' ? 'Variable' : trackingMode === 'distance' ? 'Metros' : trackingMode === 'time' ? 'Segundos' : trackingMode === 'reps' ? 'Repeticiones' : 'Kilogramos',
     minIncrement, targetMinReps, targetMaxReps, usualSets: 3, restSeconds: type === 'Fuerza' ? 180 : 90,
     progressionMethod: type === 'Cardio' || type === 'CrossFit' ? 'Sin recomendación automática' : 'Doble progresión',
     technicalNotes: '', active: true, favorite: false, perDumbbell: equipment === 'Mancuernas', createdAt: timestamp, updatedAt: timestamp,
