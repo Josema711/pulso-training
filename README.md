@@ -8,7 +8,7 @@ Aplicación web privada y local-first para registrar entrenamientos manuales, co
 - Series con carga independiente, repeticiones, RIR, RPE, tipo y estado.
 - Biblioteca editable, cardio, WODs, cambio físico, historial y gráficas.
 - Volumen, 1RM estimado, récords, estancamientos y coach de progresión explicable.
-- Copias completas JSON e informes CSV; sin cuentas, nube ni backend.
+- Copias completas JSON, informes CSV y sincronización privada opcional con Firebase.
 - Interfaz responsive en español con temas oscuro, claro y automático.
 
 ## Desarrollo local
@@ -42,31 +42,25 @@ El build estático se genera en `dist/`. Vite usa `base: './'` y la aplicación 
 4. No marques **Add a README**, **Add .gitignore** ni **Choose a license**: el proyecto ya contiene esos archivos.
 5. Pulsa **Create repository**.
 
-### 2. Enlazar y subir este proyecto
+### 2. Subir el proyecto usando solo la web de GitHub
 
-Abre PowerShell o una terminal dentro de la carpeta del proyecto y ejecuta lo siguiente. Sustituye `TU_USUARIO` y `pulso-training` si elegiste otro nombre:
+1. Abre el repositorio en GitHub y entra en la pestaña **Code**.
+2. Pulsa **Add file → Upload files**.
+3. Arrastra desde el Explorador de archivos todo el contenido del proyecto. No subas las carpetas `node_modules`, `dist` ni `.git`.
+4. Para conservar las carpetas que empiezan por punto, arrastra la carpeta completa `.github` al recuadro de subida. No uses el selector **choose your files**, porque Windows puede ocultarla.
+5. Espera a que termine la lista de archivos, escribe un mensaje en **Commit changes**, elige **Commit directly to the main branch** y confirma.
+6. Para una actualización, puedes arrastrar de nuevo la carpeta `src` completa y los archivos raíz modificados. GitHub sustituirá los archivos que tengan la misma ruta.
 
-```bash
-git add .
-git commit -m "Primera versión de Pulso"
-git remote add origin https://github.com/TU_USUARIO/pulso-training.git
-git push -u origin main
-```
+### 3. Configurar Firebase
 
-Si utilizas SSH en lugar de HTTPS, el remoto equivalente es:
+1. Abre [Firebase Console](https://console.firebase.google.com/) y selecciona el proyecto `pulso-training`.
+2. En **Build → Authentication → Get started → Sign-in method**, abre **Google**, actívalo, elige un correo de asistencia y guarda.
+3. En **Authentication → Settings → Authorized domains**, añade `josema711.github.io`. Es imprescindible para que el acceso funcione desde GitHub Pages.
+4. En **Build → Firestore Database**, pulsa **Create database**, elige una región cercana y crea la base.
+5. En **Firestore Database → Rules**, reemplaza todo el contenido por el del archivo `firestore.rules` de este repositorio y pulsa **Publish**. Subir el archivo a GitHub no publica las reglas automáticamente.
+6. Estas reglas aíslan los datos: una cuenta autenticada solo puede acceder a su propia carpeta.
 
-```bash
-git remote add origin git@github.com:TU_USUARIO/pulso-training.git
-```
-
-Si `git commit` solicita tu identidad, configúrala una vez y repite el commit:
-
-```bash
-git config --global user.name "Tu nombre"
-git config --global user.email "tu-email@example.com"
-```
-
-### 3. Activar GitHub Pages
+### 4. Activar GitHub Pages
 
 1. Abre el repositorio en GitHub.
 2. Entra en **Settings**.
@@ -74,7 +68,7 @@ git config --global user.email "tu-email@example.com"
 4. En **Build and deployment → Source**, selecciona **GitHub Actions**.
 5. No elijas una carpeta ni la opción de desplegar desde una rama: el workflow ya genera y publica `dist/`.
 
-### 4. Comprobar el despliegue
+### 5. Comprobar el despliegue
 
 1. Abre la pestaña **Actions** del repositorio.
 2. Entra en la ejecución llamada **Publicar en GitHub Pages**.
@@ -85,35 +79,24 @@ git config --global user.email "tu-email@example.com"
 
 La primera publicación puede tardar unos minutos. El workflow ejecuta `npm ci`, pruebas, ESLint y el build de producción antes de desplegar. Si cualquiera de esas comprobaciones falla, GitHub no publica una versión defectuosa.
 
-### 5. Publicar futuras actualizaciones
+### 6. Publicar futuras actualizaciones desde GitHub Web
 
-Después de modificar la aplicación:
-
-```bash
-npm test
-npm run lint
-npm run build
-git add .
-git commit -m "Describe aquí el cambio"
-git push
-```
-
-Cada `push` a `main` vuelve a publicar automáticamente. También puedes iniciar el workflow manualmente desde **Actions → Publicar en GitHub Pages → Run workflow**.
+Repite **Code → Add file → Upload files**, arrastra los archivos o carpetas modificados y crea el commit directamente en `main`. Cada commit vuelve a publicar automáticamente. También puedes iniciar el workflow desde **Actions → Publicar en GitHub Pages → Run workflow**.
 
 ### Configuración técnica incluida
 
 - Vite usa `base: './'`, compatible con cualquier nombre de repositorio.
 - React utiliza `HashRouter`, por lo que actualizar o abrir una ruta interna no provoca errores 404.
 - `.github/workflows/deploy.yml` publica únicamente después de superar pruebas, lint y build.
-- La aplicación es completamente estática: no necesita secretos, variables de entorno, servidor ni base de datos remota.
+- La configuración pública de Firebase está incluida; no es una contraseña. La privacidad depende de las reglas de Firestore y de la autenticación.
 
 ## Copias de seguridad
 
-En **Ajustes → Importar y exportar**, pulsa **Descargar copia JSON**. Para restaurarla, selecciona **Importar copia JSON**, revisa la vista previa y elige fusionar o reemplazar. Haz copias periódicas: borrar los datos del navegador elimina la base local.
+En **Ajustes**, pulsa **Continuar con Google** para activar la copia automática. Pulso mantiene IndexedDB como caché sin conexión y guarda una copia completa en Firestore. También puedes descargar un JSON manual en **Ajustes → Importar y exportar**; es recomendable conservar alguno periódicamente como segunda protección.
 
 ## Privacidad y límites
 
-Pulso no envía datos a servidores y no incluye autenticación ni sincronización. Por esa misma razón, los datos no aparecen automáticamente en otro dispositivo. Las estimaciones y recomendaciones no son instrucciones médicas y no sustituyen el criterio profesional.
+Pulso solo envía la copia de progreso a Firebase cuando el usuario conecta una cuenta de Google. No incluye analítica ni publicidad. Ningún servicio gratuito puede prometer disponibilidad perpetua, por lo que las copias JSON siguen disponibles. Las estimaciones y recomendaciones no son instrucciones médicas y no sustituyen el criterio profesional.
 
 ## Licencia
 

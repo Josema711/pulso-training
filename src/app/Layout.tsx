@@ -1,7 +1,8 @@
-import { Activity, BarChart3, Dumbbell, History, Home, Plus, Settings } from 'lucide-react'
+import { Activity, BarChart3, Cloud, CloudOff, Dumbbell, History, Home, Plus, Settings } from 'lucide-react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/database'
+import { useCloudSync } from './CloudSyncProvider'
 
 const nav = [
   { to: '/', label: 'Inicio', icon: Home }, { to: '/entrenamiento', label: 'Entrenar', icon: Plus },
@@ -11,8 +12,9 @@ const nav = [
 export function Layout() {
   const active = useLiveQuery(() => db.workouts.where('status').equals('active').first())
   const location = useLocation()
+  const { user, status } = useCloudSync()
   return <div className="app-shell">
-    <aside className="sidebar"><div className="brand"><span><Activity /></span><div><strong>PULSO</strong><small>ENTRENA CON MEMORIA</small></div></div><nav>{nav.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} end={to === '/'}><Icon /> <span>{label}</span>{to === '/entrenamiento' && active && <i />}</NavLink>)}</nav><div className="privacy-note">Tus datos viven solo en este dispositivo.</div></aside>
+    <aside className="sidebar"><div className="brand"><span><Activity /></span><div><strong>PULSO</strong><small>ENTRENA CON MEMORIA</small></div></div><nav>{nav.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} end={to === '/'}><Icon /> <span>{label}</span>{to === '/entrenamiento' && active && <i />}</NavLink>)}</nav><div className={`privacy-note ${user ? 'cloud-active' : ''}`}>{user ? <Cloud /> : <CloudOff />}<span>{user ? (status === 'error' ? 'Nube con error · revisa Ajustes' : 'Copia privada en la nube activa') : 'Copia local · activa la nube en Ajustes'}</span></div></aside>
     <main className={location.pathname === '/entrenamiento' ? 'workout-main' : ''}><Outlet /></main>
     <nav className="bottom-nav">{nav.slice(0, 5).map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} end={to === '/'}><Icon /><span>{label}</span>{to === '/entrenamiento' && active && <i />}</NavLink>)}</nav>
   </div>
