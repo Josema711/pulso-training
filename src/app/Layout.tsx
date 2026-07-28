@@ -15,7 +15,7 @@ export function Layout() {
   const location = useLocation()
   const { user, status } = useCloudSync()
   return <div className="app-shell">
-    <aside className="sidebar"><div className="brand"><span><Activity /></span><div><strong>PULSO</strong><small>ENTRENA CON MEMORIA</small></div></div><nav>{nav.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} end={to === '/'}><Icon /> <span>{label}</span>{to === '/entrenamiento' && active && <i />}</NavLink>)}</nav><div className={`privacy-note ${user ? 'cloud-active' : ''}`}>{user ? <Cloud /> : <CloudOff />}<span>{user ? (status === 'error' ? 'Nube con error · revisa Ajustes' : 'Copia privada en la nube activa') : 'Copia local · activa la nube en Ajustes'}</span></div></aside>
+    <aside className="sidebar"><div className="brand"><span><Activity /></span><div><strong>Pulso</strong><small>TRAINING LOG</small></div></div><nav aria-label="Navegación principal">{nav.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} end={to === '/'}><Icon /> <span>{label}</span>{to === '/entrenamiento' && active && <i />}</NavLink>)}</nav><div className={`privacy-note ${user ? 'cloud-active' : ''}`}>{user ? <Cloud /> : <CloudOff />}<span>{user ? (status === 'error' ? 'Nube con error · revisa Ajustes' : 'Sincronización privada activa') : 'Datos guardados en este dispositivo'}</span></div></aside>
     <main className={location.pathname === '/entrenamiento' ? 'workout-main' : ''}><Outlet /></main>
     <nav className="bottom-nav" aria-label="Navegación principal">{mobileNav.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} end={to === '/'}><Icon /><span>{label}</span>{to === '/entrenamiento' && active && <i />}</NavLink>)}</nav>
   </div>
