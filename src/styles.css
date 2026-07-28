@@ -3,8 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { color-scheme: dark; --bg:#0b0f14; --panel:#111821; --panel2:#17212c; --text:#edf2f7; --muted:#8c9aaa; --line:#24303d; --lime:#6ea8fe; --blue:#72c7bb; --danger:#ef6a71; --shadow:0 12px 36px rgba(0,0,0,.18); font-family:Inter,system-ui,sans-serif; font-synthesis:none; }
-:root.light { color-scheme: light; --bg:#f4f6f8; --panel:#fff; --panel2:#eef2f5; --text:#17202a; --muted:#687583; --line:#dce3e8; --lime:#2f6fca; --blue:#187f74; --shadow:0 10px 30px rgba(31,45,61,.07); }
+:root { color-scheme: dark; --bg:#09070d; --panel:#100d16; --panel2:#181220; --text:#f4effa; --muted:#9b91a6; --line:#30253c; --lime:#bd63ff; --blue:#8f7cff; --danger:#ff667f; --shadow:0 12px 32px rgba(0,0,0,.22); font-family:Inter,system-ui,sans-serif; font-synthesis:none; }
+:root.light { color-scheme: light; --bg:#f6f3f8; --panel:#fff; --panel2:#f0eaf4; --text:#201724; --muted:#756a7b; --line:#dfd5e5; --lime:#8129c7; --blue:#6749c9; --shadow:0 9px 24px rgba(67,38,82,.08); }
 * { box-sizing:border-box; }
 html { background:var(--bg); }
 body { margin:0; min-width:320px; min-height:100vh; min-height:100dvh; overflow-x:hidden; background:var(--bg); color:var(--text); }
@@ -130,3 +130,28 @@ main { min-width:0; }
   .eyebrow{font-size:10px;line-height:1.2}
   .bottom-nav{padding-right:max(4px,env(safe-area-inset-right));padding-left:max(4px,env(safe-area-inset-left))}
 }
+
+/* Sharp neon: geometría técnica, bordes precisos y acento morado. */
+body{background:radial-gradient(circle at 72% -20%,rgba(189,99,255,.08),transparent 32%),var(--bg)}
+.sidebar{background:color-mix(in srgb,var(--panel) 97%,transparent);box-shadow:8px 0 32px rgba(0,0,0,.14)}
+.brand>span{border-radius:3px;background:rgba(189,99,255,.08);border-color:rgba(189,99,255,.48);box-shadow:0 0 18px rgba(189,99,255,.1)}
+.brand small{color:color-mix(in srgb,var(--lime) 62%,var(--muted))}
+.sidebar nav a{border-radius:2px}
+.sidebar nav a.active{background:linear-gradient(90deg,rgba(189,99,255,.18),rgba(189,99,255,.05));box-shadow:inset 2px 0 var(--lime);color:var(--text)}
+.privacy-note,.btn,.card,.quick-actions a,.quick-actions a>span,.search,.field input,.field select,.field textarea,.filter-bar select,.set-row select,.metric-select,.set-type,.modal,.segmented,.cloud-card,.local-warning,.rest-timer,.pr-banner,.workout-add,.onboarding-privacy{border-radius:3px}
+.card{box-shadow:none}
+.hero-card{border-left:2px solid var(--lime);background:linear-gradient(105deg,rgba(189,99,255,.1),transparent 58%),var(--panel)}
+.page-header{padding-bottom:22px;border-bottom:1px solid var(--line)}
+.page-header h1{font-weight:700;letter-spacing:-.035em}
+.eyebrow{color:var(--lime);letter-spacing:.18em}
+.btn-primary{color:#0c0611;background:linear-gradient(135deg,#c878ff,#a946f0);box-shadow:0 0 20px rgba(189,99,255,.14)}
+.btn-secondary{background:transparent}
+.btn:hover{filter:brightness(1.12)}
+.status-dot,.live-pill i{box-shadow:0 0 10px var(--lime),0 0 22px rgba(189,99,255,.28)}
+.week-bars i,.confidence,.muscle-badge,.exercise-meta span,.set-number,.complete-set,.empty-icon,.finish-summary>div,.context-grid span,.import-preview span{border-radius:2px}
+.recommendation-icon{border-radius:2px}
+.exercise-card:hover{transform:none;box-shadow:inset 0 -1px color-mix(in srgb,var(--lime) 60%,transparent)}
+.modal-backdrop{backdrop-filter:blur(3px)}
+.onboarding-mark{border-radius:3px;background:rgba(189,99,255,.08);border-color:rgba(189,99,255,.5);box-shadow:0 0 24px rgba(189,99,255,.12)}
+.bottom-nav{border-radius:0}
+@media(max-width:700px){.card{border-radius:3px}.page-header{padding-bottom:16px}.quick-actions a{border-radius:3px}}
